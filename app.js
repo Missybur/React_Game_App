@@ -1,25 +1,4 @@
-const players = [
-  {
-    name: "Larry",
-    score: 50,
-    id: 1
-  },
-  {
-    name: "Ben",
-    score: 85,
-    id: 2
-  },
-  {
-    name: "Angie",
-    score: 95,
-    id: 3
-  },
-  {
-    name: "James",
-    score: 80,
-    id: 4
-  }
-]
+
 
 const Header = (props) =>  {
   return (
@@ -34,10 +13,11 @@ const Player = (props) => {
   return (
     <div className="player">
       <span className="player-name">
-        Name: { props.name }
+        <button className="remove-player" onClick={ () => props.removePlayer(props.id)}>✖</button>
+          {props.name }
       </span>
 
-      <Counter score={ props.score } />
+      <Counter />
     </div>
     );
 }
@@ -71,22 +51,56 @@ class Counter extends React.Component {
   }
 }
 
-const App = (props) => {
-  return (
-    <div className="scoreboard">
-      <Header title="Scoreboard" totalPlayers={props.initialPlayers.length} />
-      {/* Players list */}
-      { props.initialPlayers.map( player =>
-        <Player
-        name={player.name}
-        id={player.id}
-        />
-        )}
-    </div>
-  );
+class App extends React.Component {
+
+  state = {
+    players: [
+    {
+    name: "Larry",
+    id: 1
+  },
+  {
+    name: "Ben",
+    id: 2
+  },
+  {
+    name: "Angie",
+    id: 3
+  },
+  {
+    name: "James",
+    id: 4
+  }
+    ]
+  };
+
+  handleRemovePlayer = (id) => {
+    this.setState( prevState => {
+      return {
+      players: prevState.players.filter( p => p.id !== id)
+      };
+    });
+  }
+
+  render() {
+    return (
+      <div className="scoreboard">
+        <Header title="Scoreboard" totalPlayers={this.state.players.length} />
+        {/* Players list */}
+        { this.state.players.map( player =>
+          <Player
+          name={player.name}
+          id={player.id}
+          key={player.id.toString()}
+          removePlayer={this.handleRemovePlayer}
+          />
+          )}
+      </div>
+    );
+  }
 }
 
 ReactDOM.render(
-  <App initialPlayers={players}/>,
+  <App />,
   document.getElementById('root')
 );
